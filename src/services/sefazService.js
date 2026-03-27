@@ -82,17 +82,16 @@ const normalizeLabel = (label) => {
 
 const getTecnoSpeedStatus = async () => {
     try {
-        const url = 'https://monitor.tecnospeed.com.br/monitores?doc=nfe&last=true';
-        const response = await axios.get(url, {
-            headers: {
-                'Referer': 'https://monitor.tecnospeed.com.br/',
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36',
-                'Accept': 'application/json, text/plain, */*',
-                'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
-                'Cache-Control': 'no-cache',
-                'Pragma': 'no-cache'
+        // Envolta a requisição na AllOrigins para evitar o IP Block da Vercel contra a Tecnospeed
+        const targetUrl = 'https://monitor.tecnospeed.com.br/monitores?doc=nfe&last=true';
+        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
+        
+        const response = await axios.get(proxyUrl, {
+            headers: { 
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                'Accept': 'application/json, text/plain, */*'
             },
-            timeout: 4500,
+            timeout: 6500,
             httpsAgent: agent
         });
 
